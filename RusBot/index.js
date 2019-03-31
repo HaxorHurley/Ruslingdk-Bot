@@ -81,12 +81,12 @@ function getEvents(host, message){
             for(var key in data){
                 beginDate = new Date(data[key].begin_at)
                 endDate = new Date(data[key].end_at)
-                if(today <= endDate && today.getDate() >= beginDate.getDate()){
+                if(1 == 1){
                     console.log(data[key]);
                     message.reply('There is an event today at:\n'+JSON.stringify(data[key].location)
                     +' where '+JSON.stringify(data[key].title)
-                    +' will be happening. It started at '+JSON.stringify(data[key].begin_at).toLocaleString('da'))
-                    +'. The describion of the event: '+JSON.stringify(data[key].description)                    
+                    +' will be happening. It started at '+beginDate.toLocaleString('da')
+                    +'. The describion of the event: '+JSON.stringify(data[key].description))                    
                     .then(sent => console.log('Sent events to ', message.author.username))
                     .catch(console.error)
                     eventFound = true
