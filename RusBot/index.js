@@ -83,7 +83,10 @@ function getEvents(host, message){
                 endDate = new Date(data[key].end_at)
                 if(today <= endDate && today.getDate() >= beginDate.getDate()){
                     console.log(data[key]);
-                    message.reply('There is an event today!:\n'+JSON.stringify(data[key]))
+                    message.reply('There is an event today at:\n'+JSON.stringify(data[key].location)
+                    +' where '+JSON.stringify(data[key].title)
+                    +' will be happening. It started at '+JSON.stringify(data[key].begin_at).toLocaleString('da'))
+                    +'. The describion of the event: '+JSON.stringify(data[key].description)                    
                     .then(sent => console.log('Sent events to ', message.author.username))
                     .catch(console.error)
                     eventFound = true
