@@ -76,16 +76,16 @@ function getEvents(host, message){
             // Check timestamps of events beginning from today
             // If today is between time start and time end of event, link that event
             // If no event is found today, then link the first upcoming event.
-            var today = Date.now()
+            var today = new Date(2018, 8, 3, 10, 30, 0)
             var eventFound = false
             for(var key in data){
                 beginDate = new Date(data[key].begin_at)
                 endDate = new Date(data[key].end_at)
-                if(1 == 1){
+                if(today <= endDate && today.getDate() >= beginDate.getDate()){
                     console.log(data[key]);
                     message.reply('There is an event today at:\n'+JSON.stringify(data[key].location)
                     +' where '+JSON.stringify(data[key].title)
-                    +' will be happening. It started at '+beginDate.toLocaleString('da')
+                    +' will be happening. It started at '+formatDateTime(beginDate)
                     +'. The describion of the event: '+JSON.stringify(data[key].description))                    
                     .then(sent => console.log('Sent events to ', message.author.username))
                     .catch(console.error)
@@ -112,4 +112,9 @@ function getEvents(host, message){
     .catch(function(err) {
         console.log('Fetch Error :-S', err);
     });
+  }
+
+  function formatDateTime(date){
+    date.setHours(date.getHours() -2)
+    return date.toLocaleString('da')
   }
