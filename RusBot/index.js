@@ -27,7 +27,7 @@ client.on('message', message => {
                 .catch(console.error)
                 break;
 
-            case 'ruslingdk':
+            case '!ruslingdk':
                 message.reply('You can find all the information needed about "Rusperioden" here: https://www.rusling.dk/.')
                 .then(sent => console.log('Sent ruslingdk link to ${sent.author.username}'))
                 .catch(console.error)
