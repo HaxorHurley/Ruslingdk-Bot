@@ -3,4 +3,4 @@ services:
   rusbot:
     build: .
     volumes:
-     - .:/code
+     - ./RusBot:/code

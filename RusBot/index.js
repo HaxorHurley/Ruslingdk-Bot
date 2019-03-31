@@ -16,7 +16,7 @@ client.on('message', message => {
                 break;
             
             case '!help':
-                message.reply('Use !hi to say hi, !stream to get a stream link, !ruslingdk for all information or !help for help')
+                message.reply(`Rusbot is a bot made for "Rusperioden" at AAU.\nThe available commands are listed below:\n\t!hi\t\t\t\t\t\t  Say hi to the bot!\n\t!stream\t\t\t\tGet a link to the stream!\n\t!ruslingdk\t\t\tGet a link to the ruslingdk website!\n\t!help\t\t\t\t\t See this message!`)
                 .then(sent => console.log('Sent help to ${sent.author.username}'))
                 .catch(console.error)
                 break;
