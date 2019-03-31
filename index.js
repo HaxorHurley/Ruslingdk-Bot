@@ -16,8 +16,13 @@ client.on('message', message => {
                 break;
             
             case '!help':
-                message.reply('Use !hi to say hi or !help for help')
+                message.reply('Use !hi to say hi, !stream to get a stream link or !help for help')
                 .then(sent => console.log('Sent help to ${sent.author.username}'))
+                .catch(console.error)
+                break;
+            case '!stream':
+                message.reply('I see you are looking for the stream team dream team. Go to https://twitch.tv to watch the stream.')
+                .then(sent => console.log('Sent Stream link to ${sent.author.username}'))
                 .catch(console.error)
             default:
                 break;
