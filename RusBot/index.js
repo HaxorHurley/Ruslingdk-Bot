@@ -73,6 +73,10 @@ function getEvents(host, message){
 
         // Examine the text in the response
         response.json().then(function(data) {
+            // Check timestamps of events beginning from today
+            // If today is between time start and time end of event, link that event
+            // If no event is found today, then link the first upcoming event.
+            
             console.log(data[2].description);
             message.reply('This is an event:\n'+JSON.stringify(data[2]))
             .then(sent => console.log('Sent events to ', message.author.username))
