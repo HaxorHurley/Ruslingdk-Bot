@@ -76,11 +76,33 @@ function getEvents(host, message){
             // Check timestamps of events beginning from today
             // If today is between time start and time end of event, link that event
             // If no event is found today, then link the first upcoming event.
+            var today = Date.now()
+            var eventFound = false
+            for(var key in data){
+                beginDate = new Date(data[key].begin_at)
+                endDate = new Date(data[key].end_at)
+                if(today <= endDate && today.getDate() >= beginDate.getDate()){
+                    console.log(data[key]);
+                    message.reply('There is an event today!:\n'+JSON.stringify(data[key]))
+                    .then(sent => console.log('Sent events to ', message.author.username))
+                    .catch(console.error)
+                    eventFound = true
+                    break;
+                } else if (today <= endDate) {
+                    console.log(data[key]);
+                    message.reply('The next event is:\n'+JSON.stringify(data[key]))
+                    .then(sent => console.log('Sent events to ', message.author.username))
+                    .catch(console.error)
+                    eventFound = true
+                    break;
+                }
+            }
+            if(!eventFound) {
+                message.reply('There are no more events! Become a tutor next year, and take part in the fun again!')
+                .then(sent => console.log('Sent events to ', message.author.username))
+                .catch(console.error)
+            }
             
-            console.log(data[2].description);
-            message.reply('This is an event:\n'+JSON.stringify(data[2]))
-            .then(sent => console.log('Sent events to ', message.author.username))
-            .catch(console.error)
         });
         }
     )
