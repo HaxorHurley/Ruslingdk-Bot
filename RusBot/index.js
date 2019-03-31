@@ -7,7 +7,7 @@ const { prefix, token } = require('./config.json');
 const client = new Discord.Client();
 
 let host = '';
-const baseUrl = `http://${host}.rusling.dk/events.json`;
+const baseUrl = `https://${host}.rusling.dk/events.json`;
 
 function formatDateTime(date) {
   date.setHours(date.getHours() - 2);
