@@ -7,7 +7,9 @@ const { prefix, token } = require('./config.json');
 const client = new Discord.Client();
 
 let host = '';
-const baseUrl = `https://${host}.rusling.dk/events.json`;
+
+// TODO: Hvordan er det med variable scoping her, hvis host ændres?
+const getBaseUrl = () => `https://${host}.rusling.dk/events.json`;
 
 function formatDateTime(date) {
   date.setHours(date.getHours() - 2);
@@ -15,7 +17,7 @@ function formatDateTime(date) {
 }
 
 function getEvents(message) {
-  fetch(baseUrl)
+  fetch(getBaseUrl())
     .then(
       (response) => {
         if (response.status !== 200) {
