@@ -1,0 +1,22 @@
+{
+  "name": "ruslingdk-bot",
+  "version": "1.0.0",
+  "description": "ruslingdk-bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaxorHurley/Ruslingdk-Bot.git"
+  },
+  "author": "Christian Hurley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaxorHurley/Ruslingdk-Bot/issues"
+  },
+  "homepage": "https://github.com/HaxorHurley/Ruslingdk-Bot#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}
