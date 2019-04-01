@@ -1,0 +1,6 @@
+version: '3'
+services:
+  rusbot:
+    build: .
+    volumes:
+     - ./RusBot:/code
