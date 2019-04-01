@@ -17,5 +17,5 @@ jobs:
             - ./node_modules
       - run:
           name: Run ESLint
-          command: yarn eslint
+          command: cd RusBot && yarn eslint
       # TODO: Run Specs
