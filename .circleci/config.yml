@@ -7,12 +7,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: yarn-cache-{{ checksum "package.json" }}
+          key: yarn-cache-{{ checksum "RusBot/package.json" }}
       - run:
           name: Run Yarn install
           command: yarn install
       - save_cache:
-          key: yarn-cache-{{ checksum "package.json" }}
+          key: yarn-cache-{{ checksum "RusBot/package.json" }}
           paths:
             - ./node_modules
       - run:
