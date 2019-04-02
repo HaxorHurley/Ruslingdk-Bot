@@ -3,18 +3,22 @@ jobs:
   build:
     working_directory: ~/ruslingdkbot
     docker:
-      - image: circleci/node:9.9
+      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache:
           key: yarn-cache-{{ checksum "RusBot/package.json" }}
       - run:
           name: Run Yarn install
-          command: yarn install
+          command: cd RusBot && yarn install
       - save_cache:
           key: yarn-cache-{{ checksum "RusBot/package.json" }}
           paths:
             - ./node_modules
+            - ./RusBot/node_modules
+      - run:
+          name: Setup Config
+          command: cd RusBot && cp config.example.json config.json
       - run:
           name: Run ESLint
           command: cd RusBot && yarn eslint
