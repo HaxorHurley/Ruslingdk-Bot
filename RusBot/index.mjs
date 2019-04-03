@@ -5,9 +5,9 @@ import { ApiService, TimeFormatter, Admin } from "./utils";
 import config from "./config";
 
 const hosts = {};
-const tutorRequests = {};
-const instruktørRequests = {};
-const konsulentRequests = {};
+let tutorRequests = {};
+let instruktørRequests = {};
+let konsulentRequests = {};
 let role = "";
 let approved = "";
 
@@ -341,11 +341,11 @@ client.on("message", message => {
       //#region Admin Commands
       case `${config.prefix}adminhelp`:
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
             message.guild.channels
-              .find("name", "admin")
+              .find("name", "bot-channel")
               .send({
                 embed: {
                   color: 3447003,
@@ -401,7 +401,7 @@ client.on("message", message => {
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
@@ -426,7 +426,7 @@ client.on("message", message => {
 
       case `${config.prefix}seerolerequests`:
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
             let tutors =
@@ -448,7 +448,7 @@ client.on("message", message => {
                     .replace("{", "")
                     .replace("}", "");
             message.guild.channels
-              .find("name", "admin")
+              .find("name", "bot-channel")
               .send({
                 embed: {
                   color: 3447003,
@@ -486,7 +486,7 @@ client.on("message", message => {
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
@@ -512,28 +512,36 @@ client.on("message", message => {
       case `${config.prefix}approve`:
         approved = "";
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
-            if (input.charAt(0) === "@") {
-              approved = client.users.get("name", input);
-              if (typeof tutorRequests[input] !== "undefined") {
+            if (typeof message.mentions.users.first().username !== undefined) {
+              approved = message.guild.member(message.mentions.users.first());
+              if (
+                typeof tutorRequests[
+                  message.mentions.users.first().username
+                ] !== "undefined"
+              ) {
                 approved.addRole(
-                  message.guild.roles.find(r => r.name === tutorRequests[input])
+                  tutorRequests[message.mentions.users.first().username]
                 );
               }
-              if (typeof instruktørRequests[input] !== "undefined") {
+              if (
+                typeof instruktørRequests[
+                  message.mentions.users.first().username
+                ] !== "undefined"
+              ) {
                 approved.addRole(
-                  message.guild.roles.find(
-                    r => r.name === instruktørRequests[input]
-                  )
+                  instruktørRequests[message.mentions.users.first().username]
                 );
               }
-              if (typeof konsulentRequests[input] !== "undefined") {
+              if (
+                typeof konsulentRequests[
+                  message.mentions.users.first().username
+                ] !== "undefined"
+              ) {
                 approved.addRole(
-                  message.guild.roles.find(
-                    r => r.name === konsulentRequests[input]
-                  )
+                  konsulentRequests[message.mentions.users.first().username]
                 );
               }
             } else if (typeof input !== "undefined") {
@@ -554,7 +562,7 @@ client.on("message", message => {
                 });
               }
             } else {
-              message.guild.channels.find("name", "admin").send({
+              message.guild.channels.find("name", "bot-channel").send({
                 embed: {
                   color: 3447003,
                   author: {
@@ -568,7 +576,7 @@ client.on("message", message => {
               });
             }
             message.guild.channels
-              .find("name", "admin")
+              .find("name", "bot-channel")
               .send({
                 embed: {
                   color: 3447003,
@@ -591,7 +599,7 @@ client.on("message", message => {
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
@@ -617,21 +625,27 @@ client.on("message", message => {
       case `${config.prefix}approveall`:
         approved = "";
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
             approved = message.guild.roles.find(r => r.name === input);
             Object.keys(tutorRequests).forEach(user => {
-              client.users.get("name", user).addRole(tutorRequests[user]);
+              message.guild
+                .member(client.users.find("username", user))
+                .addRole(approved);
             });
             Object.keys(instruktørRequests).forEach(user => {
-              client.users.get("name", user).addRole(instruktørRequests[user]);
+              message.guild
+                .member(client.users.find("username", user))
+                .addRole(approved);
             });
             Object.keys(konsulentRequests).forEach(user => {
-              client.users.get("name", user).addRole(konsulentRequests[user]);
+              message.guild
+                .member(client.users.find("username", user))
+                .addRole(approved);
             });
             message.guild.channels
-              .find("name", "admin")
+              .find("name", "bot-channel")
               .send({
                 embed: {
                   color: 3447003,
@@ -654,7 +668,7 @@ client.on("message", message => {
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
@@ -679,41 +693,18 @@ client.on("message", message => {
 
       case `${config.prefix}remove`:
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
-            if (input.charAt(0) === "@") {
-              if (typeof input !== "undefined") {
-                delete tutorRequests[message.mentions.users.first().username];
-                delete instruktørRequests[message.mentions.users.first().username];
-                delete konsulentRequests[message.mentions.users.first().username];
+            if (typeof message.mentions.users.first().username !== undefined) {
+              delete tutorRequests[message.mentions.users.first().username];
+              delete instruktørRequests[
+                message.mentions.users.first().username
+              ];
+              delete konsulentRequests[message.mentions.users.first().username];
 
-                console.log(
-                  `User not specified. Nothing changed.\nChanged by: ${
-                    message.author.username
-                  }`
-                );
-              } else {
-                message.guild.channels
-                  .find("name", "admin")
-                  .send({
-                    embed: {
-                      color: 3447003,
-                      author: {
-                        name: client.user.username,
-                        icon_url: client.user.avatarURL
-                      },
-                      title: "Remove",
-                      description: `Must specify a user`,
-                      timestamp: new Date()
-                    }
-                  })
-                  .then(sent => console.log(`No user specified.`))
-                  .catch(console.error);
-              }
-            } else {
               message.guild.channels
-                .find("name", "admin")
+                .find("name", "bot-channel")
                 .send({
                   embed: {
                     color: 3447003,
@@ -722,19 +713,42 @@ client.on("message", message => {
                       icon_url: client.user.avatarURL
                     },
                     title: "Remove",
-                    description: `Removed user, ${message.mentions.users.first().username}, from approval lists.`,
+                    description: `Removed user, ${
+                      message.mentions.users.first().username
+                    }, from approval lists.`,
                     timestamp: new Date()
                   }
                 })
                 .then(sent =>
-                  console.log(`Removed user, ${message.mentions.users.first().username}, from approval lists.`)
+                  console.log(
+                    `Removed user, ${
+                      message.mentions.users.first().username
+                    }, from approval lists.`
+                  )
                 )
+                .catch(console.error);
+            } else {
+              message.guild.channels
+                .find("name", "bot-channel")
+                .send({
+                  embed: {
+                    color: 3447003,
+                    author: {
+                      name: client.user.username,
+                      icon_url: client.user.avatarURL
+                    },
+                    title: "Remove",
+                    description: `Must specify a user`,
+                    timestamp: new Date()
+                  }
+                })
+                .then(sent => console.log(`No user specified.`))
                 .catch(console.error);
             }
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
@@ -761,12 +775,12 @@ client.on("message", message => {
 
       case `${config.prefix}sethost`:
         if (admin.checkAdmin()) {
-          if (message.guild.channels.find("name", "admin") === null) {
+          if (message.guild.channels.find("name", "bot-channel") === null) {
             console.log("No admin channel found", message.author.username);
           } else {
             if (typeof input === "undefined") {
               message.guild.channels
-                .find("name", "admin")
+                .find("name", "bot-channel")
                 .send({
                   embed: {
                     color: 3447003,
@@ -790,7 +804,7 @@ client.on("message", message => {
             } else {
               hosts[message.guild.id] = input;
               message.guild.channels
-                .find("name", "admin")
+                .find("name", "bot-channel")
                 .send({
                   embed: {
                     color: 3447003,
@@ -815,7 +829,7 @@ client.on("message", message => {
           }
         } else {
           message.guild.channels
-            .find("name", "admin")
+            .find("name", "bot-channel")
             .send({
               embed: {
                 color: 3447003,
