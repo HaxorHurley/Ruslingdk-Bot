@@ -1,9 +1,20 @@
 import fetch from 'node-fetch';
+import { runInThisContext } from 'vm';
 
 export class TimeFormatter {
   // TODO: This is a crazy hack. Use moment.js instead.
   static formatDateTime(date, locale) {
     return date.toLocaleString(locale);
+  }
+}
+
+export class Admin {
+  constructor(message){
+    this.message = message;
+  }
+
+  checkAdmin(){
+    return ( this.message.guild.roles.find(role => role.name === "Admin") || this.message.member.hasPermission('ADMINISTRATOR'));
   }
 }
 
