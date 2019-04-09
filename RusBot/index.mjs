@@ -15,7 +15,7 @@ const client = new Discord.Client();
 
 client.once('ready', () => console.log('ready'));
 
-client.on('message', message => {
+client.on('message', (message) => {
   if (message.content.charAt(0) === config.prefix) {
     const api = new ApiService(message, hosts[message.guild.id]);
     const admin = new Admin(message);
@@ -27,9 +27,7 @@ client.on('message', message => {
       case `${config.prefix}hi`:
         message
           .reply('Hello, I am Ruslingdk-Bot!')
-          .then(sent =>
-            console.log('Sent a reply to ', message.author.username)
-          )
+          .then(sent => console.log('Sent a reply to ', message.author.username))
           .catch(console.error);
         break;
       // #region Regular Commands
@@ -70,8 +68,7 @@ client.on('message', message => {
               timestamp: new Date(),
             },
           })
-          .then(sent => console.log('Sent help information to ', message.author.username)
-          ).catch(console.error);
+          .then(sent => console.log('Sent help information to ', message.author.username)).catch(console.error);
         break;
 
       case `${config.prefix}lan`:
@@ -96,9 +93,7 @@ client.on('message', message => {
               timestamp: new Date(),
             },
           })
-          .then(sent =>
-            console.log('Sent lan information to ', message.author.username)
-          )
+          .then(sent => console.log('Sent lan information to ', message.author.username))
           .catch(console.error);
         break;
 
@@ -123,8 +118,7 @@ client.on('message', message => {
               timestamp: new Date(),
             },
           })
-          .then(sent => console.log('Sent ruslingdk link to ', message.author.username)
-          ).catch(console.error);
+          .then(sent => console.log('Sent ruslingdk link to ', message.author.username)).catch(console.error);
         break;
 
       case `${config.prefix}event`:
@@ -152,32 +146,30 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log('Host missing. Sent how to change host information to ',
-                message.author.username
-              )
-            ).catch(console.error);
+              message.author.username)).catch(console.error);
         } else {
-          api.getEvents().then(response => {
-            response.json().then(event => {
+          api.getEvents().then((response) => {
+            response.json().then((event) => {
               const today = new Date(2018, 8, 3, 10, 30, 0);
               let eventFound = false;
               let nextEvent = 'There is no next event.';
-              Object.keys(event).forEach(index => {
+              Object.keys(event).forEach((index) => {
                 const beginDate = new Date(event[index].begin_at);
                 const endDate = new Date(event[index].end_at);
                 const nextIndex = (parseInt(index, 10) + 1).toString();
                 if (
-                  today <= endDate &&
-                  today.getDate() >= beginDate.getDate() &&
-                  !eventFound
+                  today <= endDate
+                  && today.getDate() >= beginDate.getDate()
+                  && !eventFound
                 ) {
                   console.log(event[index]);
                   if (index < event.length - 1) {
                     nextEvent = `${
                       event[nextIndex].title
                     } @ ${TimeFormatter.formatDateTime(
-                      new Date(event[nextIndex].begin_at)
-                    )}\nYou can find more information about the event here: ${api.getEventUrl() +
-                      event[nextIndex].id}`;
+                      new Date(event[nextIndex].begin_at),
+                    )}\nYou can find more information about the event here: ${api.getEventUrl()
+                      + event[nextIndex].id}`;
                   }
 
                   message
@@ -211,9 +203,7 @@ client.on('message', message => {
                         timestamp: new Date(),
                       },
                     })
-                    .then(sent =>
-                      console.log('Sent current and next event to ', message.author.username)
-                    ).catch(console.error);
+                    .then(sent => console.log('Sent current and next event to ', message.author.username)).catch(console.error);
                   eventFound = true;
                   return;
                 }
@@ -247,8 +237,7 @@ client.on('message', message => {
                         timestamp: new Date(),
                       },
                     })
-                    .then(sent => console.log('Sent next event to ', message.author.username)
-                    ).catch(console.error);
+                    .then(sent => console.log('Sent next event to ', message.author.username)).catch(console.error);
                   eventFound = true;
                 }
               });
@@ -267,21 +256,19 @@ client.on('message', message => {
                       timestamp: new Date(),
                     },
                   })
-                  .then(sent => console.log('No events found. Sent reply to ', message.author.username)
-                  ).catch(console.error);
+                  .then(sent => console.log('No events found. Sent reply to ', message.author.username)).catch(console.error);
               }
             });
           });
         }
         break;
-      //#endregion Regular Commands
-      //#region Role Commands
+      // #endregion Regular Commands
+      // #region Role Commands
       case `${config.prefix}rusling`:
         role = message.guild.roles.find(r => r.name === 'Rusling');
-        member
+        message.member
           .addRole(role)
-          .then(sent => console.log('Gave user the role "Rusling" ', message.author.username)
-          ).catch(console.error);
+          .then(sent => console.log('Gave user the role "Rusling" ', message.author.username)).catch(console.error);
         break;
 
       case `${config.prefix}tutor`:
@@ -289,7 +276,7 @@ client.on('message', message => {
         tutorRequests[message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Tutor" ',
-          message.author.username
+          message.author.username,
         );
         break;
 
@@ -298,7 +285,7 @@ client.on('message', message => {
         instruktørRequests[message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Instruktør" ',
-          message.author.username
+          message.author.username,
         );
         break;
 
@@ -307,11 +294,11 @@ client.on('message', message => {
         konsulentRequests[message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Konsulent" ',
-          message.author.username
+          message.author.username,
         );
         break;
-      //#endregion Role Commands
-      //#region Admin Commands
+      // #endregion Role Commands
+      // #region Admin Commands
       case `${config.prefix}adminhelp`:
         if (admin.checkAdmin()) {
           if (message.guild.channels.find('name', 'bot-channel') === null) {
@@ -365,10 +352,9 @@ client.on('message', message => {
               })
 
               .then(sent => console.log(
-                  'Sent help information to ',
-                  message.author.username
-                )
-              ).catch(console.error);
+                'Sent help information to ',
+                message.author.username,
+              )).catch(console.error);
           }
         } else {
           message.guild.channels
@@ -386,10 +372,9 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                'Non-admin tried to use the adminhelp command',
-                message.author.username
-              )
-            ).catch(console.error);
+              'Non-admin tried to use the adminhelp command',
+              message.author.username,
+            )).catch(console.error);
         }
         break;
 
@@ -398,24 +383,21 @@ client.on('message', message => {
           if (message.guild.channels.find('name', 'bot-channel') === null) {
             console.log('No admin channel found', message.author.username);
           } else {
-            let tutors =
-              Object.keys(tutorRequests).length == 0
-                ? 'None'
-                : JSON.stringify(Object.keys(tutorRequests))
-                    .replace('{', '')
-                    .replace('}', '');
-            let instruktørs =
-              Object.keys(instruktørRequests).length == 0
-                ? 'None'
-                : JSON.stringify(Object.keys(instruktørRequests))
-                    .replace('{', '')
-                    .replace('}', '');
-            let konsulents =
-              Object.keys(konsulentRequests).length == 0
-                ? 'None'
-                : JSON.stringify(Object.keys(konsulentRequests))
-                    .replace('{', '')
-                    .replace('}', '');
+            const tutors = Object.keys(tutorRequests).length === 0
+              ? 'None'
+              : JSON.stringify(Object.keys(tutorRequests))
+                .replace('{', '')
+                .replace('}', '');
+            const instruktørs = Object.keys(instruktørRequests).length === 0
+              ? 'None'
+              : JSON.stringify(Object.keys(instruktørRequests))
+                .replace('{', '')
+                .replace('}', '');
+            const konsulents = Object.keys(konsulentRequests).length === 0
+              ? 'None'
+              : JSON.stringify(Object.keys(konsulentRequests))
+                .replace('{', '')
+                .replace('}', '');
             message.guild.channels
               .find('name', 'bot-channel')
               .send({
@@ -430,15 +412,15 @@ client.on('message', message => {
                     'Here are all the role requests.\nUse "!remove @username" to remove a user from the request list.\n Use "!approve @username", "!approve rolename", or "!approveall" to approve users.',
                   fields: [
                     {
-                      name: `Tutor`,
+                      name: 'Tutor',
                       value: `${tutors}`,
                     },
                     {
-                      name: `Instruktør`,
+                      name: 'Instruktør',
                       value: `${instruktørs}`,
                     },
                     {
-                      name: `Konsulent`,
+                      name: 'Konsulent',
                       value: `${konsulents}`,
                     },
                   ],
@@ -446,10 +428,9 @@ client.on('message', message => {
                 },
               })
               .then(sent => console.log(
-                  'Printed user role requests. ',
-                  message.author.username
-                )
-              ).catch(console.error);
+                'Printed user role requests. ',
+                message.author.username,
+              )).catch(console.error);
           }
         } else {
           message.guild.channels
@@ -467,10 +448,9 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                'Non-admin tried to use the seerolerequests command',
-                message.author.username
-              )
-            ).catch(console.error);
+              'Non-admin tried to use the seerolerequests command',
+              message.author.username,
+            )).catch(console.error);
         }
         break;
 
@@ -480,7 +460,7 @@ client.on('message', message => {
           if (message.guild.channels.find('name', 'bot-channel') === null) {
             console.log('No admin channel found', message.author.username);
           } else {
-            if (typeof message.mentions.users.first().username !== undefined) {
+            if (typeof message.mentions.users.first().username !== 'undefined') {
               approved = message.guild.member(message.mentions.users.first());
               if (
                 typeof tutorRequests[
@@ -488,7 +468,7 @@ client.on('message', message => {
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  tutorRequests[message.mentions.users.first().username]
+                  tutorRequests[message.mentions.users.first().username],
                 );
               }
               if (
@@ -497,7 +477,7 @@ client.on('message', message => {
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  instruktørRequests[message.mentions.users.first().username]
+                  instruktørRequests[message.mentions.users.first().username],
                 );
               }
               if (
@@ -506,23 +486,23 @@ client.on('message', message => {
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  konsulentRequests[message.mentions.users.first().username]
+                  konsulentRequests[message.mentions.users.first().username],
                 );
               }
             } else if (typeof input !== 'undefined') {
               approved = message.guild.roles.find(r => r.name === input);
               if (tutorRequests[0] === input) {
-                Object.keys(tutorRequests).forEach(user => {
+                Object.keys(tutorRequests).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
               if (instruktørRequests[0] === input) {
-                Object.keys(instruktørRequests).forEach(user => {
+                Object.keys(instruktørRequests).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
               if (konsulentRequests[0] === input) {
-                Object.keys(konsulentRequests).forEach(user => {
+                Object.keys(konsulentRequests).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
@@ -555,10 +535,9 @@ client.on('message', message => {
                 },
               })
               .then(sent => console.log(
-                  'Printed user role requests. ',
-                  message.author.username
-                )
-              ).catch(console.error);
+                'Printed user role requests. ',
+                message.author.username,
+              )).catch(console.error);
           }
         } else {
           message.guild.channels
@@ -576,10 +555,9 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                'Non-admin tried to use the approve command',
-                message.author.username
-              )
-            ).catch(console.error);
+              'Non-admin tried to use the approve command',
+              message.author.username,
+            )).catch(console.error);
         }
         break;
 
@@ -590,17 +568,17 @@ client.on('message', message => {
             console.log('No admin channel found', message.author.username);
           } else {
             approved = message.guild.roles.find(r => r.name === input);
-            Object.keys(tutorRequests).forEach(user => {
+            Object.keys(tutorRequests).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
             });
-            Object.keys(instruktørRequests).forEach(user => {
+            Object.keys(instruktørRequests).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
             });
-            Object.keys(konsulentRequests).forEach(user => {
+            Object.keys(konsulentRequests).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
@@ -620,10 +598,9 @@ client.on('message', message => {
                 },
               })
               .then(sent => console.log(
-                  'Printed user role requests. ',
-                  message.author.username
-                )
-              ).catch(console.error);
+                'Printed user role requests. ',
+                message.author.username,
+              )).catch(console.error);
           }
         } else {
           message.guild.channels
@@ -641,10 +618,9 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                'Non-admin tried to use the approve command',
-                message.author.username
-              )
-            ).catch(console.error);
+              'Non-admin tried to use the approve command',
+              message.author.username,
+            )).catch(console.error);
         }
         break;
 
@@ -652,54 +628,51 @@ client.on('message', message => {
         if (admin.checkAdmin()) {
           if (message.guild.channels.find('name', 'bot-channel') === null) {
             console.log('No admin channel found', message.author.username);
-          } else {
-            if (typeof message.mentions.users.first().username !== undefined) {
-              delete tutorRequests[message.mentions.users.first().username];
-              delete instruktørRequests[
-                message.mentions.users.first().username
-              ];
-              delete konsulentRequests[message.mentions.users.first().username];
+          } else if (typeof message.mentions.users.first().username !== 'undefined') {
+            delete tutorRequests[message.mentions.users.first().username];
+            delete instruktørRequests[
+              message.mentions.users.first().username
+            ];
+            delete konsulentRequests[message.mentions.users.first().username];
 
-              message.guild.channels
-                .find('name', 'bot-channel')
-                .send({
-                  embed: {
-                    color: 3447003,
-                    author: {
-                      name: client.user.username,
-                      icon_url: client.user.avatarURL,
-                    },
-                    title: 'Remove',
-                    description: `Removed user, ${
-                      message.mentions.users.first().username
-                    }, from approval lists.`,
-                    timestamp: new Date(),
+            message.guild.channels
+              .find('name', 'bot-channel')
+              .send({
+                embed: {
+                  color: 3447003,
+                  author: {
+                    name: client.user.username,
+                    icon_url: client.user.avatarURL,
                   },
-                })
-                .then(sent => console.log(
-                    `Removed user, ${
-                      message.mentions.users.first().username
-                    }, from approval lists.`
-                  )
-                ).catch(console.error);
-            } else {
-              message.guild.channels
-                .find('name', 'bot-channel')
-                .send({
-                  embed: {
-                    color: 3447003,
-                    author: {
-                      name: client.user.username,
-                      icon_url: client.user.avatarURL,
-                    },
-                    title: 'Remove',
-                    description: `Must specify a user`,
-                    timestamp: new Date(),
+                  title: 'Remove',
+                  description: `Removed user, ${
+                    message.mentions.users.first().username
+                  }, from approval lists.`,
+                  timestamp: new Date(),
+                },
+              })
+              .then(sent => console.log(
+                `Removed user, ${
+                  message.mentions.users.first().username
+                }, from approval lists.`,
+              )).catch(console.error);
+          } else {
+            message.guild.channels
+              .find('name', 'bot-channel')
+              .send({
+                embed: {
+                  color: 3447003,
+                  author: {
+                    name: client.user.username,
+                    icon_url: client.user.avatarURL,
                   },
-                })
-                .then(sent => console.log(`No user specified.`))
-                .catch(console.error);
-            }
+                  title: 'Remove',
+                  description: 'Must specify a user',
+                  timestamp: new Date(),
+                },
+              })
+              .then(sent => console.log('No user specified.'))
+              .catch(console.error);
           }
         } else {
           message.guild.channels
@@ -718,11 +691,10 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                `Non admin user tried to remove users from approval lists.\nUser: ${
-                  message.author.username
-                }`
-              )
-            ).catch(console.error);
+              `Non admin user tried to remove users from approval lists.\nUser: ${
+                message.author.username
+              }`,
+            )).catch(console.error);
         }
         break;
 
@@ -730,51 +702,47 @@ client.on('message', message => {
         if (admin.checkAdmin()) {
           if (message.guild.channels.find('name', 'bot-channel') === null) {
             console.log('No admin channel found', message.author.username);
+          } else if (typeof input === 'undefined') {
+            message.guild.channels
+              .find('name', 'bot-channel')
+              .send({
+                embed: {
+                  color: 3447003,
+                  author: {
+                    name: client.user.username,
+                    icon_url: client.user.avatarURL,
+                  },
+                  title: 'Set Host',
+                  description: 'You must specify a host',
+                  timestamp: new Date(),
+                },
+              })
+              .then(sent => console.log(
+                `Host not specified. Nothing changed.\nChanged by: ${
+                  message.author.username
+                }`,
+              )).catch(console.error);
           } else {
-            if (typeof input === 'undefined') {
-              message.guild.channels
-                .find('name', 'bot-channel')
-                .send({
-                  embed: {
-                    color: 3447003,
-                    author: {
-                      name: client.user.username,
-                      icon_url: client.user.avatarURL,
-                    },
-                    title: 'Set Host',
-                    description: 'You must specify a host',
-                    timestamp: new Date(),
+            hosts[message.guild.id] = input;
+            message.guild.channels
+              .find('name', 'bot-channel')
+              .send({
+                embed: {
+                  color: 3447003,
+                  author: {
+                    name: client.user.username,
+                    icon_url: client.user.avatarURL,
                   },
-                })
-                .then(sent => console.log(
-                    `Host not specified. Nothing changed.\nChanged by: ${
-                      message.author.username
-                    }`
-                  )
-                ).catch(console.error);
-            } else {
-              hosts[message.guild.id] = input;
-              message.guild.channels
-                .find('name', 'bot-channel')
-                .send({
-                  embed: {
-                    color: 3447003,
-                    author: {
-                      name: client.user.username,
-                      icon_url: client.user.avatarURL,
-                    },
-                    title: 'Set Host',
-                    description: `Host set to: ${input}`,
-                    timestamp: new Date(),
-                  },
-                })
-                .then(sent => console.log(
-                    `Host changed to: ${input}\nChanged by: ${
-                      message.author.username
-                    }`
-                  )
-                ).catch(console.error);
-            }
+                  title: 'Set Host',
+                  description: `Host set to: ${input}`,
+                  timestamp: new Date(),
+                },
+              })
+              .then(sent => console.log(
+                `Host changed to: ${input}\nChanged by: ${
+                  message.author.username
+                }`,
+              )).catch(console.error);
           }
         } else {
           message.guild.channels
@@ -792,15 +760,14 @@ client.on('message', message => {
               },
             })
             .then(sent => console.log(
-                `Non admin user tried to change host.\nUser: ${
-                  message.author.username
-                }`
-              )
-            ).catch(console.error);
+              `Non admin user tried to change host.\nUser: ${
+                message.author.username
+              }`,
+            )).catch(console.error);
         }
         /* eslint-disable-next-line prefer-destructuring */
         break;
-      //#endregion Admin Commands
+      // #endregion Admin Commands
       default:
         break;
     }
