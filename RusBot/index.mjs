@@ -1,13 +1,13 @@
-/* eslint no-unused-vars: ["error", { "args": "none" }] */
+/* eslint no-unused-vars: ['error', { 'args': 'none' }] */
 
 import Discord from "discord.js";
 import { ApiService, TimeFormatter, Admin } from "./utils";
 import config from "./config";
 
 const hosts = {};
-let tutorRequests = {};
-let instruktørRequests = {};
-let konsulentRequests = {};
+const tutorRequests = {};
+const instruktørRequests = {};
+const konsulentRequests = {};
 let role = "";
 let approved = "";
 
@@ -23,7 +23,7 @@ client.on("message", message => {
 
     switch (message.content.split(" ")[0]) {
       // Todo: Refactor this with first-class.citizens; of a commands objects:
-      // e.g. { "command": () => { ... } }
+      // e.g. { 'command': () => { ... } }
       case `${config.prefix}hi`:
         message
           .reply("Hello, I am Ruslingdk-Bot!")
@@ -32,7 +32,7 @@ client.on("message", message => {
           )
           .catch(console.error);
         break;
-      //#region Regular Commands
+      // #region Regular Commands
       case `${config.prefix}help`:
         message
           .reply({
@@ -40,7 +40,7 @@ client.on("message", message => {
               color: 3447003,
               author: {
                 name: client.user.username,
-                icon_url: client.user.avatarURL
+                icon_url: client.user.avatarURL,
               },
               title: "Help",
               description:
@@ -48,27 +48,27 @@ client.on("message", message => {
               fields: [
                 {
                   name: `${config.prefix}hi`,
-                  value: "Say hi to the bot!"
+                  value: "Say hi to the bot!",
                 },
                 {
                   name: `${config.prefix}lan`,
-                  value: "Get a information about RUSLAN!"
+                  value: "Get a information about RUSLAN!",
                 },
                 {
                   name: `${config.prefix}ruslingdk`,
-                  value: "Get a link to the ruslingdk website!"
+                  value: "Get a link to the ruslingdk website!",
                 },
                 {
                   name: `${config.prefix}event`,
-                  value: "get information about the current or next event!"
+                  value: "get information about the current or next event!",
                 },
                 {
                   name: `${config.prefix}help`,
-                  value: "See this message!"
-                }
+                  value: "See this message!",
+                },
               ],
-              timestamp: new Date()
-            }
+              timestamp: new Date(),
+            },
           })
 
           .then(sent =>
@@ -84,7 +84,7 @@ client.on("message", message => {
               color: 3447003,
               author: {
                 name: client.user.username,
-                icon_url: client.user.avatarURL
+                icon_url: client.user.avatarURL,
               },
               title: "Ruslan",
               description:
@@ -93,11 +93,11 @@ client.on("message", message => {
                 {
                   name: "Links",
                   value:
-                    "[RUSLAN Twitch Stream](https://www.twitch.tv/aauruslan19)\n[RUSLAN Discord Server](INSERT LINK HERE)"
-                }
+                    "[RUSLAN Twitch Stream](https://www.twitch.tv/aauruslan19)\n[RUSLAN Discord Server](INSERT LINK HERE)",
+                },
               ],
-              timestamp: new Date()
-            }
+              timestamp: new Date(),
+            },
           })
           .then(sent =>
             console.log("Sent lan information to ", message.author.username)
@@ -112,7 +112,7 @@ client.on("message", message => {
               color: 3447003,
               author: {
                 name: client.user.username,
-                icon_url: client.user.avatarURL
+                icon_url: client.user.avatarURL,
               },
               title: "Rusling.dk",
               description:
@@ -120,11 +120,11 @@ client.on("message", message => {
               fields: [
                 {
                   name: "Link",
-                  value: `[rusling.dk](${api.getBaseUrl()})`
-                }
+                  value: `[rusling.dk](${api.getBaseUrl()})`,
+                },
               ],
-              timestamp: new Date()
-            }
+              timestamp: new Date(),
+            },
           })
           .then(sent =>
             console.log("Sent ruslingdk link to ", message.author.username)
@@ -140,7 +140,7 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Event",
                 description:
@@ -148,13 +148,13 @@ client.on("message", message => {
                 fields: [
                   {
                     name: "No host set.",
-                    value: `Use "${
+                    value: `Use '${
                       config.prefix
-                    }sethost hostname" to set host.\nOnly admins can do this.`
-                  }
+                    }sethost hostname' to set host.\nOnly admins can do this.`,
+                  },
                 ],
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -194,30 +194,30 @@ client.on("message", message => {
                         color: 3447003,
                         author: {
                           name: client.user.username,
-                          icon_url: client.user.avatarURL
+                          icon_url: client.user.avatarURL,
                         },
                         title: "Event",
                         description: "There is an event today!",
                         fields: [
                           {
                             name: `${event[index].title}`,
-                            value: `${event[index].description}`
+                            value: `${event[index].description}`,
                           },
                           {
                             name: "Time",
-                            value: `${TimeFormatter.formatDateTime(beginDate)}`
+                            value: `${TimeFormatter.formatDateTime(beginDate)}`,
                           },
                           {
                             name: "Place",
-                            value: `${event[index].location}`
+                            value: `${event[index].location}`,
                           },
                           {
                             name: "Next Event",
-                            value: `${nextEvent}`
-                          }
+                            value: `${nextEvent}`,
+                          },
                         ],
-                        timestamp: new Date()
-                      }
+                        timestamp: new Date(),
+                      },
                     })
                     .then(sent =>
                       console.log(
@@ -238,26 +238,26 @@ client.on("message", message => {
                         color: 3447003,
                         author: {
                           name: client.user.username,
-                          icon_url: client.user.avatarURL
+                          icon_url: client.user.avatarURL,
                         },
                         title: "Event",
                         description: "The next event is!",
                         fields: [
                           {
                             name: `${event[index].title}`,
-                            value: `${event[index].description}`
+                            value: `${event[index].description}`,
                           },
                           {
                             name: "Time",
-                            value: `${TimeFormatter.formatDateTime(beginDate)}`
+                            value: `${TimeFormatter.formatDateTime(beginDate)}`,
                           },
                           {
                             name: "Place",
-                            value: `${event[index].location}`
-                          }
+                            value: `${event[index].location}`,
+                          },
                         ],
-                        timestamp: new Date()
-                      }
+                        timestamp: new Date(),
+                      },
                     })
                     .then(sent =>
                       console.log(
@@ -277,12 +277,12 @@ client.on("message", message => {
                       color: 3447003,
                       author: {
                         name: client.user.username,
-                        icon_url: client.user.avatarURL
+                        icon_url: client.user.avatarURL,
                       },
                       title: "Event",
                       description: "There are no more events!",
-                      timestamp: new Date()
-                    }
+                      timestamp: new Date(),
+                    },
                   })
                   .then(sent =>
                     console.log(
@@ -351,7 +351,7 @@ client.on("message", message => {
                   color: 3447003,
                   author: {
                     name: client.user.username,
-                    icon_url: client.user.avatarURL
+                    icon_url: client.user.avatarURL,
                   },
                   title: "Admin Help",
                   description:
@@ -360,35 +360,35 @@ client.on("message", message => {
                     {
                       name: `${config.prefix}sethost`,
                       value:
-                        "Sets the host of the bot to your educational domain."
+                        "Sets the host of the bot to your educational domain.",
                     },
                     {
                       name: `${config.prefix}seerolerequests`,
                       value:
-                        "Gets a list of all the users who have asked to get either the Tutor or Instruktør role."
+                        "Gets a list of all the users who have asked to get either the Tutor or Instruktør role.",
                     },
                     {
                       name: `${config.prefix}remove`,
                       value:
-                        "Removes a user from the list of the users who have asked to get either the Tutor or Instruktør role."
+                        "Removes a user from the list of the users who have asked to get either the Tutor or Instruktør role.",
                     },
                     {
                       name: `${config.prefix}approveall`,
                       value:
-                        "Approves all the users waiting for approval on getting either the Tutor or Instruktør role."
+                        "Approves all the users waiting for approval on getting either the Tutor or Instruktør role.",
                     },
                     {
                       name: `${config.prefix}approve`,
                       value:
-                        "Approves a users waiting for approval on getting either the Tutor or Instruktør role."
+                        "Approves a users waiting for approval on getting either the Tutor or Instruktør role.",
                     },
                     {
                       name: `${config.prefix}adminhelp`,
-                      value: "See this message!"
-                    }
+                      value: "See this message!",
+                    },
                   ],
-                  timestamp: new Date()
-                }
+                  timestamp: new Date(),
+                },
               })
 
               .then(sent =>
@@ -407,12 +407,12 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Admin Help",
                 description: "You must be an admin to use admin commands.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -454,7 +454,7 @@ client.on("message", message => {
                   color: 3447003,
                   author: {
                     name: client.user.username,
-                    icon_url: client.user.avatarURL
+                    icon_url: client.user.avatarURL,
                   },
                   title: "Role Requests",
                   description:
@@ -462,19 +462,19 @@ client.on("message", message => {
                   fields: [
                     {
                       name: `Tutor`,
-                      value: `${tutors}`
+                      value: `${tutors}`,
                     },
                     {
                       name: `Instruktør`,
-                      value: `${instruktørs}`
+                      value: `${instruktørs}`,
                     },
                     {
                       name: `Konsulent`,
-                      value: `${konsulents}`
-                    }
+                      value: `${konsulents}`,
+                    },
                   ],
-                  timestamp: new Date()
-                }
+                  timestamp: new Date(),
+                },
               })
               .then(sent =>
                 console.log(
@@ -492,12 +492,12 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Admin Help",
                 description: "You must be an admin to use admin commands.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -567,12 +567,12 @@ client.on("message", message => {
                   color: 3447003,
                   author: {
                     name: client.user.username,
-                    icon_url: client.user.avatarURL
+                    icon_url: client.user.avatarURL,
                   },
                   title: "Remove",
                   description: "You must specify a user or a role.",
-                  timestamp: new Date()
-                }
+                  timestamp: new Date(),
+                },
               });
             }
             message.guild.channels
@@ -582,12 +582,12 @@ client.on("message", message => {
                   color: 3447003,
                   author: {
                     name: client.user.username,
-                    icon_url: client.user.avatarURL
+                    icon_url: client.user.avatarURL,
                   },
                   title: "Approve",
                   description: `Approved ${approved}`,
-                  timestamp: new Date()
-                }
+                  timestamp: new Date(),
+                },
               })
               .then(sent =>
                 console.log(
@@ -605,12 +605,12 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Approve",
                 description: "You must be an admin to use admin commands.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -651,12 +651,12 @@ client.on("message", message => {
                   color: 3447003,
                   author: {
                     name: client.user.username,
-                    icon_url: client.user.avatarURL
+                    icon_url: client.user.avatarURL,
                   },
                   title: "Approve",
                   description: `Approved ${approved}`,
-                  timestamp: new Date()
-                }
+                  timestamp: new Date(),
+                },
               })
               .then(sent =>
                 console.log(
@@ -674,12 +674,12 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Approve",
                 description: "You must be an admin to use admin commands.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -710,14 +710,14 @@ client.on("message", message => {
                     color: 3447003,
                     author: {
                       name: client.user.username,
-                      icon_url: client.user.avatarURL
+                      icon_url: client.user.avatarURL,
                     },
                     title: "Remove",
                     description: `Removed user, ${
                       message.mentions.users.first().username
                     }, from approval lists.`,
-                    timestamp: new Date()
-                  }
+                    timestamp: new Date(),
+                  },
                 })
                 .then(sent =>
                   console.log(
@@ -735,12 +735,12 @@ client.on("message", message => {
                     color: 3447003,
                     author: {
                       name: client.user.username,
-                      icon_url: client.user.avatarURL
+                      icon_url: client.user.avatarURL,
                     },
                     title: "Remove",
                     description: `Must specify a user`,
-                    timestamp: new Date()
-                  }
+                    timestamp: new Date(),
+                  },
                 })
                 .then(sent => console.log(`No user specified.`))
                 .catch(console.error);
@@ -754,13 +754,13 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Remove",
                 description:
                   "Only users with admin permission can remove users from approval lists.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
@@ -786,12 +786,12 @@ client.on("message", message => {
                     color: 3447003,
                     author: {
                       name: client.user.username,
-                      icon_url: client.user.avatarURL
+                      icon_url: client.user.avatarURL,
                     },
                     title: "Set Host",
                     description: "You must specify a host",
-                    timestamp: new Date()
-                  }
+                    timestamp: new Date(),
+                  },
                 })
                 .then(sent =>
                   console.log(
@@ -810,12 +810,12 @@ client.on("message", message => {
                     color: 3447003,
                     author: {
                       name: client.user.username,
-                      icon_url: client.user.avatarURL
+                      icon_url: client.user.avatarURL,
                     },
                     title: "Set Host",
                     description: `Host set to: ${input}`,
-                    timestamp: new Date()
-                  }
+                    timestamp: new Date(),
+                  },
                 })
                 .then(sent =>
                   console.log(
@@ -835,12 +835,12 @@ client.on("message", message => {
                 color: 3447003,
                 author: {
                   name: client.user.username,
-                  icon_url: client.user.avatarURL
+                  icon_url: client.user.avatarURL,
                 },
                 title: "Set Host",
                 description: "Only users with admin permission can set host.",
-                timestamp: new Date()
-              }
+                timestamp: new Date(),
+              },
             })
             .then(sent =>
               console.log(
