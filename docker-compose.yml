@@ -2,5 +2,6 @@ version: '3'
 services:
   rusbot:
     build: .
+    image: Rusbot
     volumes:
      - ./RusBot:/code
