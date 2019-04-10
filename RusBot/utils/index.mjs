@@ -35,3 +35,18 @@ export class ApiService {
       });
   }
 }
+
+export class Roles {
+  constructor(message, roleRequests){
+    this.message = message;
+    this.roleRequests = roleRequests
+  }
+
+  serverNotSet(){
+    return (this.roleRequests[this.message.guild.id] === undefined);
+  }
+  setServer(){ 
+    return {'tutorRequests':{}, 'instruktørRequests': {}, 'konsulentRequests': {}};
+  }
+}
+

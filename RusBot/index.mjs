@@ -1,13 +1,13 @@
 /* eslint no-unused-vars: ['error', { 'args': 'none' }] */
 
 import Discord from 'discord.js';
-import { ApiService, TimeFormatter, Admin } from './utils';
+import {
+  ApiService, TimeFormatter, Admin, Roles,
+} from './utils';
 import config from './config';
 
 const hosts = {};
-const tutorRequests = {};
-const instruktørRequests = {};
-const konsulentRequests = {};
+const roleRequests = {};
 const adminchannel = 'bot-channel';
 let role = '';
 let approved = '';
@@ -20,6 +20,7 @@ client.on('message', (message) => {
   if (message.content.charAt(0) === config.prefix) {
     const api = new ApiService(message, hosts[message.guild.id]);
     const admin = new Admin(message);
+    const roles = new Roles(message, roleRequests);
     const input = message.content.split(' ')[1];
 
     switch (message.content.split(' ')[0]) {
@@ -267,6 +268,9 @@ client.on('message', (message) => {
       // #endregion Regular Commands
       // #region Role Commands
       case `${config.prefix}rusling`:
+        if (roles.serverNotSet()) {
+          roleRequests[message.guild.id] = roles.setServer();
+        }
         role = message.guild.roles.find(r => r.name === 'Rusling');
         message.member
           .addRole(role)
@@ -274,8 +278,11 @@ client.on('message', (message) => {
         break;
 
       case `${config.prefix}tutor`:
+        if (roles.serverNotSet()) {
+          roleRequests[message.guild.id] = roles.setServer();
+        }
         role = message.guild.roles.find(r => r.name === 'Tutor');
-        tutorRequests[message.author.username] = role;
+        roleRequests[message.guild.id]['tutorRequests'][message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Tutor" ',
           message.author.username,
@@ -283,8 +290,11 @@ client.on('message', (message) => {
         break;
 
       case `${config.prefix}instruktør`:
+        if (roles.serverNotSet()) {
+          roleRequests[message.guild.id] = roles.setServer();
+        }
         role = message.guild.roles.find(r => r.name === 'Instruktør');
-        instruktørRequests[message.author.username] = role;
+        roleRequests[message.guild.id]['instruktørRequests'][message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Instruktør" ',
           message.author.username,
@@ -292,8 +302,11 @@ client.on('message', (message) => {
         break;
 
       case `${config.prefix}konsulent`:
+        if (roles.serverNotSet()) {
+          roleRequests[message.guild.id] = roles.setServer();
+        }
         role = message.guild.roles.find(r => r.name === 'Konsulent');
-        konsulentRequests[message.author.username] = role;
+        roleRequests[message.guild.id]['konsulentRequests'][message.author.username] = role;
         console.log(
           'Added user the list of users waiting for approval for the role "Konsulent" ',
           message.author.username,
@@ -385,19 +398,26 @@ client.on('message', (message) => {
           if (message.guild.channels.find('name', adminchannel) === null) {
             console.log('No admin channel found', message.author.username);
           } else {
-            const tutors = Object.keys(tutorRequests).length === 0
+            if (roles.serverNotSet()) {
+              roleRequests[message.guild.id] = roles.setServer();
+            }
+            const tutors = Object.keys(roleRequests[message.guild.id]['tutorRequests']).length === 0
               ? 'None'
-              : JSON.stringify(Object.keys(tutorRequests))
+              : JSON.stringify(Object.keys(roleRequests[message.guild.id]['tutorRequests']))
                 .replace('{', '')
                 .replace('}', '');
-            const instruktørs = Object.keys(instruktørRequests).length === 0
+            const instruktørs = Object.keys(roleRequests[
+              message.guild.id]['instruktørRequests']).length === 0
               ? 'None'
-              : JSON.stringify(Object.keys(instruktørRequests))
+              : JSON.stringify(Object.keys(roleRequests[
+                message.guild.id]['instruktørRequests']))
                 .replace('{', '')
                 .replace('}', '');
-            const konsulents = Object.keys(konsulentRequests).length === 0
+            const konsulents = Object.keys(roleRequests[
+              message.guild.id]['konsulentRequests']).length === 0
               ? 'None'
-              : JSON.stringify(Object.keys(konsulentRequests))
+              : JSON.stringify(Object.keys(roleRequests[
+                message.guild.id]['konsulentRequests']))
                 .replace('{', '')
                 .replace('}', '');
             message.guild.channels
@@ -462,49 +482,55 @@ client.on('message', (message) => {
           if (message.guild.channels.find('name', adminchannel) === null) {
             console.log('No admin channel found', message.author.username);
           } else {
+            if (roles.serverNotSet()) {
+              roleRequests[message.guild.id] = roles.setServer();
+            }
             if (typeof message.mentions.users.first().username !== 'undefined') {
               approved = message.guild.member(message.mentions.users.first());
               if (
-                typeof tutorRequests[
+                typeof roleRequests[message.guild.id]['tutorRequests'][
                   message.mentions.users.first().username
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  tutorRequests[message.mentions.users.first().username],
+                  roleRequests[message.guild.id]['tutorRequests'][
+                    message.mentions.users.first().username],
                 );
               }
               if (
-                typeof instruktørRequests[
+                typeof roleRequests[message.guild.id]['instruktørRequests'][
                   message.mentions.users.first().username
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  instruktørRequests[message.mentions.users.first().username],
+                  roleRequests[message.guild.id]['instruktørRequests'][
+                    message.mentions.users.first().username],
                 );
               }
               if (
-                typeof konsulentRequests[
+                typeof roleRequests[message.guild.id]['konsulentRequests'][
                   message.mentions.users.first().username
                 ] !== 'undefined'
               ) {
                 approved.addRole(
-                  konsulentRequests[message.mentions.users.first().username],
+                  roleRequests[message.guild.id]['konsulentRequests'][
+                    message.mentions.users.first().username],
                 );
               }
             } else if (typeof input !== 'undefined') {
               approved = message.guild.roles.find(r => r.name === input);
-              if (tutorRequests[0] === input) {
-                Object.keys(tutorRequests).forEach((user) => {
+              if (roleRequests[message.guild.id]['tutorRequests'][0] === input) {
+                Object.keys(roleRequests[message.guild.id]['tutorRequests']).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
-              if (instruktørRequests[0] === input) {
-                Object.keys(instruktørRequests).forEach((user) => {
+              if (roleRequests[message.guild.id]['instruktørRequests'][0] === input) {
+                Object.keys(roleRequests[message.guild.id]['instruktørRequests']).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
-              if (konsulentRequests[0] === input) {
-                Object.keys(konsulentRequests).forEach((user) => {
+              if (roleRequests[message.guild.id]['konsulentRequests'][0] === input) {
+                Object.keys(roleRequests[message.guild.id]['konsulentRequests']).forEach((user) => {
                   client.users.get('name', user).addRole(approved);
                 });
               }
@@ -570,17 +596,17 @@ client.on('message', (message) => {
             console.log('No admin channel found', message.author.username);
           } else {
             approved = message.guild.roles.find(r => r.name === input);
-            Object.keys(tutorRequests).forEach((user) => {
+            Object.keys(roleRequests[message.guild.id]['tutorRequests']).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
             });
-            Object.keys(instruktørRequests).forEach((user) => {
+            Object.keys(roleRequests[message.guild.id]['instruktørRequests']).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
             });
-            Object.keys(konsulentRequests).forEach((user) => {
+            Object.keys(roleRequests[message.guild.id]['konsulentRequests']).forEach((user) => {
               message.guild
                 .member(client.users.find('username', user))
                 .addRole(approved);
@@ -631,11 +657,13 @@ client.on('message', (message) => {
           if (message.guild.channels.find('name', adminchannel) === null) {
             console.log('No admin channel found', message.author.username);
           } else if (typeof message.mentions.users.first().username !== 'undefined') {
-            delete tutorRequests[message.mentions.users.first().username];
-            delete instruktørRequests[
+            delete roleRequests[message.guild.id]['tutorRequests'][
+              message.mentions.users.first().username];
+            delete roleRequests[message.guild.id]['instruktørRequests'][
               message.mentions.users.first().username
             ];
-            delete konsulentRequests[message.mentions.users.first().username];
+            delete roleRequests[message.guild.id]['konsulentRequests'][
+              message.mentions.users.first().username];
 
             message.guild.channels
               .find('name', adminchannel)
